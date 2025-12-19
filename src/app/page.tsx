@@ -47,18 +47,11 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Day indicator */}
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-            <span className="text-white/60 text-sm">Today is</span>
-            <span className="text-white font-semibold text-sm">
-              {getDayAbbreviation(currentDay)}
-            </span>
-          </div>
-        </div>
-
-        {/* Time Toggle */}
-        <div className="mb-8">
+        {/* Day + Time Toggle Row */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <span className="text-white/50 font-medium text-sm px-3 py-2 rounded-full bg-white/5 border border-white/10">
+            {getDayAbbreviation(currentDay)}
+          </span>
           <TimeToggle 
             isEvening={isEvening} 
             onToggle={() => setIsEvening(!isEvening)} 

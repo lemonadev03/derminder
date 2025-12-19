@@ -9,8 +9,7 @@ interface TimeToggleProps {
 
 export function TimeToggle({ isEvening, onToggle }: TimeToggleProps) {
   return (
-    <div className="flex items-center justify-center">
-      <div className="relative inline-flex rounded-full bg-white/5 backdrop-blur-sm border border-white/10 p-1">
+    <div className="relative inline-flex rounded-full bg-white/5 backdrop-blur-sm border border-white/10 p-1">
         {/* Sliding background pill */}
         <div
           className={cn(
@@ -46,7 +45,6 @@ export function TimeToggle({ isEvening, onToggle }: TimeToggleProps) {
           <span className="text-base">🌙</span>
           <span className="font-semibold text-sm">PM</span>
         </button>
-      </div>
     </div>
   );
 }
