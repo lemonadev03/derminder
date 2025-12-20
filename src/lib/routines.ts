@@ -127,6 +127,18 @@ export function getDayAbbreviation(day: DayOfWeek): string {
   return abbrevs[day];
 }
 
+const daysOrder: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+export function getPreviousDay(day: DayOfWeek): DayOfWeek {
+  const index = daysOrder.indexOf(day);
+  return daysOrder[(index - 1 + 7) % 7];
+}
+
+export function getNextDay(day: DayOfWeek): DayOfWeek {
+  const index = daysOrder.indexOf(day);
+  return daysOrder[(index + 1) % 7];
+}
+
 export function getEveningRoutineForDay(section: RoutineSection, day: DayOfWeek): Routine | null {
   const evening = section.routines.evening;
   

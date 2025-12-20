@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { TimeToggle } from '@/components/time-toggle';
 import { RoutineCard } from '@/components/routine-card';
-import { allSections, getCurrentDayOfWeek, getDayAbbreviation, DayOfWeek } from '@/lib/routines';
+import { allSections, getCurrentDayOfWeek, getDayAbbreviation, getPreviousDay, getNextDay, DayOfWeek } from '@/lib/routines';
 
 export default function Home() {
   const [isEvening, setIsEvening] = useState(false);
@@ -49,9 +49,29 @@ export default function Home() {
 
         {/* Day + Time Toggle Row */}
         <div className="flex items-center justify-center gap-3 mb-6">
-          <span className="text-white/50 font-medium text-sm px-3 py-2 rounded-full bg-white/5 border border-white/10">
-            {getDayAbbreviation(currentDay)}
-          </span>
+          <div className="flex items-center rounded-full bg-white/5 border border-white/10">
+            <button
+              onClick={() => setCurrentDay(getPreviousDay(currentDay))}
+              className="p-2 text-white/40 hover:text-white/70 hover:bg-white/5 rounded-l-full transition-colors"
+              aria-label="Previous day"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <span className="text-white/50 font-medium text-sm px-2 py-2 min-w-[3rem] text-center">
+              {getDayAbbreviation(currentDay)}
+            </span>
+            <button
+              onClick={() => setCurrentDay(getNextDay(currentDay))}
+              className="p-2 text-white/40 hover:text-white/70 hover:bg-white/5 rounded-r-full transition-colors"
+              aria-label="Next day"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
           <TimeToggle 
             isEvening={isEvening} 
             onToggle={() => setIsEvening(!isEvening)} 
