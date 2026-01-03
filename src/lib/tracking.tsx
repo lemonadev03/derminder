@@ -8,12 +8,12 @@ export type EntryKey =
   | 'orals_morning' | 'orals_evening';
 
 export interface DayLogEntries {
-  face_morning?: string | null;
-  face_evening?: string | null;
-  scalp_morning?: string | null;
-  scalp_evening?: string | null;
-  orals_morning?: string | null;
-  orals_evening?: string | null;
+  face_morning?: string;
+  face_evening?: string;
+  scalp_morning?: string;
+  scalp_evening?: string;
+  orals_morning?: string;
+  orals_evening?: string;
 }
 
 export interface TrackingState {
@@ -25,12 +25,9 @@ export interface TrackingState {
 const STORAGE_KEY = 'derminder:tracking';
 const AUTH_KEY = 'derminder:auth';
 
-// Helper to get date string in local timezone (YYYY-MM-DD)
+// Helper to get date string
 export function formatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return date.toISOString().split('T')[0];
 }
 
 // Helper to get current week's dates (Sunday to Saturday)
@@ -227,9 +224,6 @@ export function useTracking() {
       
       const newValue = isCurrentlyComplete ? undefined : new Date().toISOString();
       
-      // For pending sync, use null instead of undefined so it survives JSON.stringify
-      const pendingSyncValue = isCurrentlyComplete ? null : new Date().toISOString();
-      
       const updatedEntries: DayLogEntries = {
         ...currentEntries,
         [key]: newValue,
@@ -244,7 +238,7 @@ export function useTracking() {
       const pendingForDate = prev.pendingSync[date] || {};
       const updatedPending: DayLogEntries = {
         ...pendingForDate,
-        [key]: pendingSyncValue,
+        [key]: newValue as string | undefined,
       };
 
       return {
@@ -298,10 +292,10 @@ export function useTracking() {
     const entries = state.logs[date] || {};
     const morningKey = `${sectionId}_morning` as EntryKey;
     const eveningKey = `${sectionId}_evening` as EntryKey;
-    
+
     const hasMorning = !!entries[morningKey];
     const hasEvening = !!entries[eveningKey];
-    
+
     if (hasMorning && hasEvening) return 2;
     if (hasMorning || hasEvening) return 1;
     return 0;
@@ -315,9 +309,9 @@ export function useTracking() {
     toggleEntry,
     getEntries,
     getCompletionCount,
-    getSectionCompletion,
     isEntryComplete,
     getEntryTimestamp,
+    getSectionCompletion,
     syncToServer,
     fetchLogs,
   };
