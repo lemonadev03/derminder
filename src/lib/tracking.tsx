@@ -16,9 +16,19 @@ export interface DayLogEntries {
   orals_evening?: string;
 }
 
+// Pending sync entries can have null to signal deletion
+export interface PendingSyncEntries {
+  face_morning?: string | null;
+  face_evening?: string | null;
+  scalp_morning?: string | null;
+  scalp_evening?: string | null;
+  orals_morning?: string | null;
+  orals_evening?: string | null;
+}
+
 export interface TrackingState {
   logs: Record<string, DayLogEntries>; // keyed by date "2025-12-27"
-  pendingSync: Record<string, DayLogEntries>; // entries that need to be synced
+  pendingSync: Record<string, PendingSyncEntries>; // entries that need to be synced (null = delete)
   lastSynced: string | null;
 }
 
@@ -222,23 +232,25 @@ export function useTracking() {
       const currentEntries = prev.logs[date] || {};
       const isCurrentlyComplete = !!currentEntries[key];
       
-      const newValue = isCurrentlyComplete ? undefined : new Date().toISOString();
+      // Use null to signal deletion to the server, or timestamp to mark complete
+      const newValue = isCurrentlyComplete ? null : new Date().toISOString();
       
       const updatedEntries: DayLogEntries = {
         ...currentEntries,
-        [key]: newValue,
       };
       
-      // Clean up undefined values for storage
-      if (newValue === undefined) {
+      // Update or delete the entry locally
+      if (newValue === null) {
         delete updatedEntries[key];
+      } else {
+        updatedEntries[key] = newValue;
       }
 
-      // Also add to pending sync
+      // For pending sync, we need to send null explicitly so server knows to delete
       const pendingForDate = prev.pendingSync[date] || {};
-      const updatedPending: DayLogEntries = {
+      const updatedPending = {
         ...pendingForDate,
-        [key]: newValue as string | undefined,
+        [key]: newValue,
       };
 
       return {

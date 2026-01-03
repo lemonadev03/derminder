@@ -92,8 +92,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: none;
+    height: 100dvh;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -248,4 +257,9 @@
 /* Time pill transition */
 .time-pill-transition {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Safe area padding for mobile devices */
+.pb-safe {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }

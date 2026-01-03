@@ -90,7 +90,7 @@ function HomeContent() {
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="h-full bg-background flex items-center justify-center">
         <div className="text-muted-foreground animate-fade-in">Loading...</div>
       </div>
     );
@@ -99,7 +99,7 @@ function HomeContent() {
   // Auth screen
   if (showAuth) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center">
+      <main className="h-full bg-background flex items-center justify-center">
         <div className="w-full max-w-sm mx-4 p-8 rounded-xl bg-card border border-border opacity-0 animate-scale-in">
           <h1 className="text-2xl font-semibold text-foreground mb-1 text-center">Derminder</h1>
           <p className="text-muted-foreground text-sm text-center mb-8">Enter your credentials</p>
@@ -143,8 +143,8 @@ function HomeContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-md mx-auto px-4 py-8 pb-20">
+    <main className="h-full bg-background overflow-hidden">
+      <div className="h-full max-w-md mx-auto px-4 pt-6 pb-safe overflow-y-auto overscroll-none">
         {/* Header */}
         <header className="mb-6 opacity-0 animate-fade-in-down">
           <h1 className="text-2xl font-semibold text-foreground tracking-tight">

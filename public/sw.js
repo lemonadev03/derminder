@@ -1,4 +1,4 @@
-const CACHE_NAME = 'derminder-v1';
+const CACHE_NAME = 'derminder-v2';
 const urlsToCache = [
   '/',
 ];
@@ -27,9 +27,26 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - Network first, fallback to cache
 self.addEventListener('fetch', (event) => {
+  // Skip caching for non-GET requests (POST, PUT, DELETE, etc.)
+  if (event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Skip caching for API routes
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
+        // Only cache successful responses
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+
         // Clone the response
         const responseClone = response.clone();
         caches.open(CACHE_NAME)
