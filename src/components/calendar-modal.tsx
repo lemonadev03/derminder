@@ -87,39 +87,40 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center animate-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       
       {/* Modal */}
       <div className={cn(
         "relative w-full max-w-md mx-4 mb-4 sm:mb-0",
         "bg-card border border-border rounded-xl",
-        "max-h-[85vh] overflow-hidden flex flex-col"
+        "max-h-[85vh] overflow-hidden flex flex-col",
+        "animate-slide-up sm:animate-scale-in"
       )}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <button
               onClick={goToPrevMonth}
-              className="p-2 rounded-md hover:bg-secondary transition-colors"
+              className="p-2 rounded-md hover:bg-secondary active:scale-95 transition-all duration-150"
             >
               <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             
-            <h2 className="text-base font-medium text-foreground min-w-[140px] text-center">
+            <h2 className="text-base font-medium text-foreground min-w-[140px] text-center transition-all duration-300">
               {MONTH_NAMES[currentMonth.getMonth()]} {currentMonth.getFullYear()}
             </h2>
             
             <button
               onClick={goToNextMonth}
-              className="p-2 rounded-md hover:bg-secondary transition-colors"
+              className="p-2 rounded-md hover:bg-secondary active:scale-95 transition-all duration-150"
             >
               <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -130,31 +131,31 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
           <div className="flex items-center gap-2">
             {/* Status indicators */}
             {!isOnline && (
-              <span className="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
+              <span className="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md animate-fade-in">
                 Offline
               </span>
             )}
             {isSyncing && (
-              <span className="text-xs text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md animate-pulse">
+              <span className="text-xs text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md animate-soft-pulse">
                 Syncing...
               </span>
             )}
             {hasPendingSync && !isSyncing && isOnline && (
-              <span className="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
+              <span className="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md animate-fade-in">
                 Pending
               </span>
             )}
 
             <button
               onClick={goToToday}
-              className="text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-secondary transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-secondary active:scale-95 transition-all duration-150"
             >
               Today
             </button>
             
             <button
               onClick={onClose}
-              className="p-2 rounded-md hover:bg-secondary transition-colors"
+              className="p-2 rounded-md hover:bg-secondary active:scale-95 transition-all duration-150"
             >
               <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -166,12 +167,14 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">
           {selectedDate ? (
-            <DayDetail 
-              date={selectedDate} 
-              onClose={() => setSelectedDate(null)} 
-            />
+            <div className="animate-fade-in">
+              <DayDetail 
+                date={selectedDate} 
+                onClose={() => setSelectedDate(null)} 
+              />
+            </div>
           ) : (
-            <>
+            <div className="animate-fade-in">
               {/* Day headers */}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {DAY_NAMES.map(day => (
@@ -199,13 +202,14 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
                       key={dateStr}
                       onClick={() => setSelectedDate(date)}
                       className={cn(
-                        "aspect-square flex flex-col items-center justify-center gap-0.5 rounded-md transition-colors",
-                        "hover:bg-secondary",
+                        "aspect-square flex flex-col items-center justify-center gap-0.5 rounded-md",
+                        "transition-all duration-150",
+                        "hover:bg-secondary active:scale-95",
                         isToday && "bg-secondary"
                       )}
                     >
                       <span className={cn(
-                        "text-sm font-medium",
+                        "text-sm font-medium transition-colors duration-150",
                         isToday ? "text-foreground" : "text-muted-foreground"
                       )}>
                         {date.getDate()}
@@ -215,7 +219,7 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
                       <div className="flex gap-0.5">
                         {/* Morning indicator */}
                         <div className={cn(
-                          "w-1.5 h-1.5 rounded-full transition-colors",
+                          "w-1.5 h-1.5 rounded-full transition-all duration-300",
                           morningCount === 0 && "bg-border",
                           morningCount === 1 && "bg-amber-400/50",
                           morningCount === 2 && "bg-amber-400/70",
@@ -223,7 +227,7 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
                         )} />
                         {/* Evening indicator */}
                         <div className={cn(
-                          "w-1.5 h-1.5 rounded-full transition-colors",
+                          "w-1.5 h-1.5 rounded-full transition-all duration-300",
                           eveningCount === 0 && "bg-border",
                           eveningCount === 1 && "bg-indigo-400/50",
                           eveningCount === 2 && "bg-indigo-400/70",
@@ -246,7 +250,7 @@ export function CalendarModal({ isOpen, onClose, initialDate }: CalendarModalPro
                   <span className="text-xs text-muted-foreground">Evening</span>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>

@@ -106,8 +106,12 @@ export const scalpSection: RoutineSection = {
 export const allSections: RoutineSection[] = [faceSection, scalpSection, oralSection];
 
 export function getCurrentDayOfWeek(): DayOfWeek {
+  return getDayOfWeekFromDate(new Date());
+}
+
+export function getDayOfWeekFromDate(date: Date): DayOfWeek {
   const days: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  return days[new Date().getDay()];
+  return days[date.getDay()];
 }
 
 export function getDayAbbreviation(day: DayOfWeek): string {

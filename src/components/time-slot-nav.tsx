@@ -1,42 +1,30 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { DayOfWeek, getDayAbbreviation, getPreviousDay, getNextDay } from '@/lib/routines';
 
 interface TimeSlotNavProps {
-  currentDay: DayOfWeek;
+  selectedDate: Date;
   isEvening: boolean;
-  onNavigate: (day: DayOfWeek, isEvening: boolean) => void;
+  onNavigate: (direction: 'prev' | 'next') => void;
 }
 
-export function TimeSlotNav({ currentDay, isEvening, onNavigate }: TimeSlotNavProps) {
-  const goBack = () => {
-    if (isEvening) {
-      onNavigate(currentDay, false);
-    } else {
-      onNavigate(getPreviousDay(currentDay), true);
-    }
-  };
-
-  const goForward = () => {
-    if (isEvening) {
-      onNavigate(getNextDay(currentDay), false);
-    } else {
-      onNavigate(currentDay, true);
-    }
-  };
+export function TimeSlotNav({ selectedDate, isEvening, onNavigate }: TimeSlotNavProps) {
+  // Format the date for display
+  const dayAbbrev = selectedDate.toLocaleDateString('en-US', { weekday: 'short' });
+  const dayNum = selectedDate.getDate();
+  const monthAbbrev = selectedDate.toLocaleDateString('en-US', { month: 'short' });
 
   return (
-    <div className="rounded-lg bg-card border border-border">
+    <div className="rounded-lg bg-card border border-border overflow-hidden">
       <div className="flex items-center px-1 py-1">
         {/* Back Arrow */}
         <button
-          onClick={goBack}
-          className="flex items-center justify-center w-10 h-10 rounded-md transition-colors hover:bg-secondary"
+          onClick={() => onNavigate('prev')}
+          className="flex items-center justify-center w-10 h-10 rounded-md transition-all duration-150 hover:bg-secondary active:scale-95"
           aria-label="Previous time slot"
         >
           <svg 
-            className="w-4 h-4 text-muted-foreground" 
+            className="w-4 h-4 text-muted-foreground transition-transform duration-150 hover:-translate-x-0.5" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor" 
@@ -47,22 +35,28 @@ export function TimeSlotNav({ currentDay, isEvening, onNavigate }: TimeSlotNavPr
         </button>
 
         {/* Center Content */}
-        <div className="flex-1 flex items-center justify-center gap-4 py-2">
+        <div className="flex-1 flex items-center justify-center gap-5 py-1">
           {/* Day Display */}
-          <span className="text-foreground font-medium text-sm">
-            {getDayAbbreviation(currentDay)}
-          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-foreground font-medium text-base transition-all duration-300">
+              {dayAbbrev}
+            </span>
+            <span className="text-muted-foreground text-sm transition-all duration-300">
+              {monthAbbrev} {dayNum}
+            </span>
+          </div>
           
           {/* Time Period Indicator */}
           <div 
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium",
+              "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium",
+              "transition-all duration-300 ease-out",
               isEvening 
-                ? "bg-indigo-500/15 text-indigo-400" 
-                : "bg-amber-500/15 text-amber-400"
+                ? "bg-indigo-500/20 text-indigo-400" 
+                : "bg-amber-500/20 text-amber-400"
             )}
           >
-            <span className="text-sm leading-none">
+            <span className="text-base leading-none">
               {isEvening ? '🌙' : '☀️'}
             </span>
             <span>
@@ -73,12 +67,12 @@ export function TimeSlotNav({ currentDay, isEvening, onNavigate }: TimeSlotNavPr
 
         {/* Forward Arrow */}
         <button
-          onClick={goForward}
-          className="flex items-center justify-center w-10 h-10 rounded-md transition-colors hover:bg-secondary"
+          onClick={() => onNavigate('next')}
+          className="flex items-center justify-center w-10 h-10 rounded-md transition-all duration-150 hover:bg-secondary active:scale-95"
           aria-label="Next time slot"
         >
           <svg 
-            className="w-4 h-4 text-muted-foreground" 
+            className="w-4 h-4 text-muted-foreground transition-transform duration-150 hover:translate-x-0.5" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor" 

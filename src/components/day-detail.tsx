@@ -83,7 +83,7 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
         {onClose && (
           <button
             onClick={onClose}
-            className="p-2 rounded-md hover:bg-secondary transition-colors"
+            className="p-2 rounded-md hover:bg-secondary active:scale-95 transition-all duration-150"
           >
             <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -99,7 +99,7 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Morning</span>
         </div>
         <div className="space-y-1.5">
-          {morningToggles.map((toggle) => (
+          {morningToggles.map((toggle, index) => (
             <ToggleRow
               key={toggle.key}
               toggle={toggle}
@@ -108,6 +108,7 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
               timestamp={getEntryTimestamp(dateStr, toggle.key)}
               formatTimestamp={formatTimestamp}
               onToggle={() => toggleEntry(dateStr, toggle.key)}
+              delay={index * 50}
             />
           ))}
         </div>
@@ -120,7 +121,7 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Evening</span>
         </div>
         <div className="space-y-1.5">
-          {eveningToggles.map((toggle) => (
+          {eveningToggles.map((toggle, index) => (
             <ToggleRow
               key={toggle.key}
               toggle={toggle}
@@ -129,6 +130,7 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
               timestamp={getEntryTimestamp(dateStr, toggle.key)}
               formatTimestamp={formatTimestamp}
               onToggle={() => toggleEntry(dateStr, toggle.key)}
+              delay={(index + 3) * 50}
             />
           ))}
         </div>
@@ -144,26 +146,35 @@ interface ToggleRowProps {
   timestamp: string | null;
   formatTimestamp: (t: string | null) => string;
   onToggle: () => void;
+  delay?: number;
 }
 
-function ToggleRow({ toggle, isComplete, timestamp, formatTimestamp, onToggle }: ToggleRowProps) {
+function ToggleRow({ toggle, isComplete, timestamp, formatTimestamp, onToggle, delay = 0 }: ToggleRowProps) {
   const styles = accentStyles[toggle.accentColor];
   
   return (
     <button
       onClick={onToggle}
       className={cn(
-        "w-full flex items-center justify-between p-3 rounded-lg transition-colors",
+        "w-full flex items-center justify-between p-3 rounded-lg",
+        "transition-all duration-200 ease-out",
         "border border-border",
+        "active:scale-[0.99]",
         isComplete
           ? styles.bg
           : "hover:bg-secondary"
       )}
+      style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center gap-2.5">
-        <span className="text-base">{toggle.section}</span>
         <span className={cn(
-          "text-sm font-medium",
+          "text-base transition-transform duration-200",
+          isComplete && "scale-110"
+        )}>
+          {toggle.section}
+        </span>
+        <span className={cn(
+          "text-sm font-medium transition-colors duration-200",
           isComplete ? styles.text : "text-muted-foreground"
         )}>
           {toggle.label}
@@ -172,20 +183,20 @@ function ToggleRow({ toggle, isComplete, timestamp, formatTimestamp, onToggle }:
 
       <div className="flex items-center gap-2.5">
         {isComplete && timestamp && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground animate-fade-in">
             {formatTimestamp(timestamp)}
           </span>
         )}
         
         {/* Toggle indicator */}
         <div className={cn(
-          "w-5 h-5 rounded-full flex items-center justify-center transition-colors",
+          "w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200",
           isComplete
             ? cn(styles.bg, styles.text)
             : "border border-border"
         )}>
           {isComplete && (
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <svg className="w-3 h-3 animate-check" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           )}
