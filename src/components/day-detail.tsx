@@ -13,20 +13,34 @@ interface RoutineToggle {
   label: string;
   section: string;
   time: 'morning' | 'evening';
-  colorClass: string;
-  bgClass: string;
+  accentColor: 'rose' | 'teal' | 'amber';
 }
 
 const ROUTINE_TOGGLES: RoutineToggle[] = [
   // Morning
-  { key: 'face_morning', label: 'Face', section: '✨', time: 'morning', colorClass: 'text-rose-400', bgClass: 'bg-rose-500/20' },
-  { key: 'scalp_morning', label: 'Scalp', section: '💆', time: 'morning', colorClass: 'text-teal-400', bgClass: 'bg-teal-500/20' },
-  { key: 'orals_morning', label: 'Orals', section: '💊', time: 'morning', colorClass: 'text-amber-400', bgClass: 'bg-amber-500/20' },
+  { key: 'face_morning', label: 'Face', section: '✨', time: 'morning', accentColor: 'rose' },
+  { key: 'scalp_morning', label: 'Scalp', section: '💆', time: 'morning', accentColor: 'teal' },
+  { key: 'orals_morning', label: 'Orals', section: '💊', time: 'morning', accentColor: 'amber' },
   // Evening
-  { key: 'face_evening', label: 'Face', section: '✨', time: 'evening', colorClass: 'text-rose-400', bgClass: 'bg-rose-500/20' },
-  { key: 'scalp_evening', label: 'Scalp', section: '💆', time: 'evening', colorClass: 'text-teal-400', bgClass: 'bg-teal-500/20' },
-  { key: 'orals_evening', label: 'Orals', section: '💊', time: 'evening', colorClass: 'text-amber-400', bgClass: 'bg-amber-500/20' },
+  { key: 'face_evening', label: 'Face', section: '✨', time: 'evening', accentColor: 'rose' },
+  { key: 'scalp_evening', label: 'Scalp', section: '💆', time: 'evening', accentColor: 'teal' },
+  { key: 'orals_evening', label: 'Orals', section: '💊', time: 'evening', accentColor: 'amber' },
 ];
+
+const accentStyles = {
+  rose: {
+    text: 'text-rose-400',
+    bg: 'bg-rose-500/15',
+  },
+  teal: {
+    text: 'text-teal-400',
+    bg: 'bg-teal-500/15',
+  },
+  amber: {
+    text: 'text-amber-400',
+    bg: 'bg-amber-500/15',
+  },
+};
 
 export function DayDetail({ date, onClose }: DayDetailProps) {
   const { toggleEntry, isEntryComplete, getEntryTimestamp, getCompletionCount } = useTrackingContext();
@@ -59,19 +73,19 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-base font-medium text-foreground">
             {formatDateHeader(date)}
           </h3>
-          <p className="text-white/40 text-sm">
+          <p className="text-muted-foreground text-sm">
             {completionCount}/6 completed
           </p>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            className="p-2 rounded-md hover:bg-secondary transition-colors"
           >
-            <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -82,9 +96,9 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
       <div className="space-y-2">
         <div className="flex items-center gap-2 px-1">
           <span className="text-sm">☀️</span>
-          <span className="text-xs font-medium text-white/50 uppercase tracking-wide">Morning</span>
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Morning</span>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {morningToggles.map((toggle) => (
             <ToggleRow
               key={toggle.key}
@@ -103,9 +117,9 @@ export function DayDetail({ date, onClose }: DayDetailProps) {
       <div className="space-y-2">
         <div className="flex items-center gap-2 px-1">
           <span className="text-sm">🌙</span>
-          <span className="text-xs font-medium text-white/50 uppercase tracking-wide">Evening</span>
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Evening</span>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {eveningToggles.map((toggle) => (
             <ToggleRow
               key={toggle.key}
@@ -133,43 +147,45 @@ interface ToggleRowProps {
 }
 
 function ToggleRow({ toggle, isComplete, timestamp, formatTimestamp, onToggle }: ToggleRowProps) {
+  const styles = accentStyles[toggle.accentColor];
+  
   return (
     <button
       onClick={onToggle}
       className={cn(
-        "w-full flex items-center justify-between p-3 rounded-xl transition-all",
-        "border",
+        "w-full flex items-center justify-between p-3 rounded-lg transition-colors",
+        "border border-border",
         isComplete
-          ? `${toggle.bgClass} border-white/20`
-          : "bg-white/5 border-white/10 hover:bg-white/10"
+          ? styles.bg
+          : "hover:bg-secondary"
       )}
     >
-      <div className="flex items-center gap-3">
-        <span className="text-lg">{toggle.section}</span>
+      <div className="flex items-center gap-2.5">
+        <span className="text-base">{toggle.section}</span>
         <span className={cn(
-          "font-medium",
-          isComplete ? toggle.colorClass : "text-white/60"
+          "text-sm font-medium",
+          isComplete ? styles.text : "text-muted-foreground"
         )}>
           {toggle.label}
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {isComplete && timestamp && (
-          <span className="text-xs text-white/40">
+          <span className="text-xs text-muted-foreground">
             {formatTimestamp(timestamp)}
           </span>
         )}
         
         {/* Toggle indicator */}
         <div className={cn(
-          "w-5 h-5 rounded-full flex items-center justify-center transition-all",
+          "w-5 h-5 rounded-full flex items-center justify-center transition-colors",
           isComplete
-            ? `${toggle.bgClass} ring-2 ring-white/30`
-            : "bg-white/10"
+            ? cn(styles.bg, styles.text)
+            : "border border-border"
         )}>
           {isComplete && (
-            <svg className={cn("w-3 h-3", toggle.colorClass)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           )}
@@ -178,4 +194,3 @@ function ToggleRow({ toggle, isComplete, timestamp, formatTimestamp, onToggle }:
     </button>
   );
 }
-

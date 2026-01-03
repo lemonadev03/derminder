@@ -16,6 +16,24 @@ interface RoutineCardProps {
   currentDay: DayOfWeek;
 }
 
+const accentStyles = {
+  rose: {
+    border: 'border-l-rose-500',
+    text: 'text-rose-400',
+    check: 'bg-rose-500/20 text-rose-400',
+  },
+  teal: {
+    border: 'border-l-teal-500',
+    text: 'text-teal-400',
+    check: 'bg-teal-500/20 text-teal-400',
+  },
+  amber: {
+    border: 'border-l-amber-500',
+    text: 'text-amber-400',
+    check: 'bg-amber-500/20 text-amber-400',
+  },
+};
+
 export function RoutineCard({ section, isEvening, currentDay }: RoutineCardProps) {
   const { toggleEntry, isEntryComplete, getEntryTimestamp } = useTrackingContext();
   
@@ -52,39 +70,31 @@ export function RoutineCard({ section, isEvening, currentDay }: RoutineCardProps
     toggleEntry(today, entryKey);
   };
 
+  const styles = accentStyles[section.accentColor];
+
   return (
     <button
       onClick={handleToggle}
       className={cn(
-        "relative overflow-hidden rounded-2xl w-full text-left",
-        "bg-gradient-to-br",
-        section.bgGradient,
-        "border-2 transition-all duration-300",
-        isComplete 
-          ? "border-white/30 ring-2 ring-white/10" 
-          : "border-white/10 hover:border-white/20",
-        "backdrop-blur-xl",
-        "group active:scale-[0.98]"
+        "relative w-full text-left",
+        "rounded-lg bg-card border border-border",
+        "border-l-[3px]",
+        styles.border,
+        "transition-colors duration-200",
+        "hover:bg-secondary",
+        isComplete && "opacity-75"
       )}
     >
-      {/* Completion overlay */}
-      {isComplete && (
-        <div className="absolute inset-0 bg-white/5 pointer-events-none" />
-      )}
-      
-      {/* Subtle glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      <div className="relative p-5">
+      <div className="p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{section.icon}</span>
-            <h2 className={cn("text-xl font-bold", section.colorClass)}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg">{section.icon}</span>
+            <h2 className={cn("text-base font-medium", styles.text)}>
               {section.title}
             </h2>
             {applicableDays && (
-              <span className="text-xs font-medium text-white/40 bg-white/5 px-2 py-1 rounded-full">
+              <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">
                 {applicableDays}
               </span>
             )}
@@ -93,29 +103,27 @@ export function RoutineCard({ section, isEvening, currentDay }: RoutineCardProps
           {/* Completion indicator with timestamp */}
           <div className="flex items-center gap-2">
             {isComplete && timestamp && (
-              <span className="text-xs text-white/50">
+              <span className="text-xs text-muted-foreground">
                 {formatTimestamp(timestamp)}
               </span>
             )}
             <div className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+              "w-6 h-6 rounded-full flex items-center justify-center transition-colors",
               isComplete
-                ? "bg-white/20"
-                : "bg-white/5"
+                ? styles.check
+                : "border border-border"
             )}>
-              {isComplete ? (
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              {isComplete && (
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-              ) : (
-                <div className="w-4 h-4 rounded-full border-2 border-white/30" />
               )}
             </div>
           </div>
         </div>
         
         {/* Products */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {routine.products.map((product) => (
             <ProductBadge 
               key={product.id} 

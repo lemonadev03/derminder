@@ -19,8 +19,7 @@ export interface RoutineSection {
   id: string;
   title: string;
   icon: string;
-  colorClass: string;
-  bgGradient: string;
+  accentColor: 'rose' | 'teal' | 'amber';
   routines: SectionRoutine;
 }
 
@@ -29,8 +28,7 @@ export const faceSection: RoutineSection = {
   id: 'face',
   title: 'Face',
   icon: '✨',
-  colorClass: 'text-rose-400',
-  bgGradient: 'from-rose-500/20 to-pink-500/10',
+  accentColor: 'rose',
   routines: {
     morning: {
       products: [
@@ -63,8 +61,7 @@ export const oralSection: RoutineSection = {
   id: 'orals',
   title: 'Orals',
   icon: '💊',
-  colorClass: 'text-amber-400',
-  bgGradient: 'from-amber-500/20 to-orange-500/10',
+  accentColor: 'amber',
   routines: {
     morning: {
       products: [
@@ -87,8 +84,7 @@ export const scalpSection: RoutineSection = {
   id: 'scalp',
   title: 'Scalp',
   icon: '💆',
-  colorClass: 'text-teal-400',
-  bgGradient: 'from-teal-500/20 to-cyan-500/10',
+  accentColor: 'teal',
   routines: {
     morning: {
       products: [
@@ -148,4 +144,3 @@ export function getEveningRoutineForDay(section: RoutineSection, day: DayOfWeek)
   
   return evening;
 }
-

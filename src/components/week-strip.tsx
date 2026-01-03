@@ -15,7 +15,7 @@ export function WeekStrip({ onDayClick }: WeekStripProps) {
   const today = formatDate(new Date());
 
   return (
-    <div className="flex items-center justify-between gap-1 px-2 py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+    <div className="flex items-center justify-between gap-1 px-2 py-2 rounded-lg bg-card border border-border">
       {weekDates.map((date, index) => {
         const dateStr = formatDate(date);
         const isToday = dateStr === today;
@@ -32,23 +32,23 @@ export function WeekStrip({ onDayClick }: WeekStripProps) {
             key={dateStr}
             onClick={() => onDayClick?.(date)}
             className={cn(
-              "flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all",
-              "hover:bg-white/10 active:scale-95",
-              isToday && "bg-white/10 ring-1 ring-white/20"
+              "flex flex-col items-center gap-1 px-2 py-2 rounded-md transition-colors",
+              "hover:bg-secondary",
+              isToday && "bg-secondary"
             )}
           >
             {/* Day name */}
             <span className={cn(
               "text-[10px] font-medium uppercase tracking-wide",
-              isToday ? "text-white/70" : "text-white/40"
+              isToday ? "text-foreground" : "text-muted-foreground"
             )}>
               {DAY_NAMES[index]}
             </span>
             
             {/* Day number */}
             <span className={cn(
-              "text-sm font-semibold",
-              isToday ? "text-white" : "text-white/60"
+              "text-sm font-medium",
+              isToday ? "text-foreground" : "text-muted-foreground"
             )}>
               {dayNum}
             </span>
@@ -62,7 +62,7 @@ export function WeekStrip({ onDayClick }: WeekStripProps) {
                   <CompletionDot level={oralsLevel} color="amber" />
                 </>
               ) : (
-                <div className="h-1.5 w-1.5 rounded-full bg-white/10" />
+                <div className="h-1.5 w-1.5 rounded-full bg-border" />
               )}
             </div>
           </button>
@@ -102,4 +102,3 @@ function CompletionDot({ level, color }: { level: 0 | 1 | 2; color: 'rose' | 'te
     )} />
   );
 }
-

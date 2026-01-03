@@ -18,7 +18,7 @@ function HomeContent() {
   const [authInput, setAuthInput] = useState({ username: '', password: '' });
   const [authError, setAuthError] = useState('');
 
-  const { isOnline, hasPendingSync, isSyncing, syncToServer, fetchLogs } = useTrackingContext();
+  const { isOnline, syncToServer, fetchLogs } = useTrackingContext();
 
   useEffect(() => {
     setMounted(true);
@@ -63,8 +63,8 @@ function HomeContent() {
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="animate-pulse text-white/50">Loading...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
   }
@@ -72,10 +72,10 @@ function HomeContent() {
   // Auth screen
   if (showAuth) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="w-full max-w-sm mx-4 p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-          <h1 className="text-2xl font-bold text-white mb-2 text-center">Derminder</h1>
-          <p className="text-white/40 text-sm text-center mb-6">Enter your credentials</p>
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-full max-w-sm mx-4 p-8 rounded-xl bg-card border border-border">
+          <h1 className="text-2xl font-semibold text-foreground mb-1 text-center">Derminder</h1>
+          <p className="text-muted-foreground text-sm text-center mb-8">Enter your credentials</p>
           
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
@@ -84,7 +84,7 @@ function HomeContent() {
                 placeholder="Username"
                 value={authInput.username}
                 onChange={(e) => setAuthInput(prev => ({ ...prev, username: e.target.value }))}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
@@ -93,17 +93,17 @@ function HomeContent() {
                 placeholder="Password"
                 value={authInput.password}
                 onChange={(e) => setAuthInput(prev => ({ ...prev, password: e.target.value }))}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             
             {authError && (
-              <p className="text-red-400 text-sm text-center">{authError}</p>
+              <p className="text-destructive text-sm text-center">{authError}</p>
             )}
             
             <button
               type="submit"
-              className="w-full px-4 py-3 rounded-xl bg-white/20 text-white font-medium hover:bg-white/30 transition-colors"
+              className="w-full px-4 py-3 rounded-lg bg-foreground text-background font-medium hover:opacity-90 transition-opacity"
             >
               Sign In
             </button>
@@ -114,39 +114,22 @@ function HomeContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-md mx-auto px-4 py-8 pb-20">
+    <main className="min-h-screen bg-background">
+      <div className="max-w-md mx-auto px-4 py-8 pb-20">
         {/* Header */}
-        <header className="text-center mb-4">
-          <h1 className="text-3xl font-bold text-white mb-1 tracking-tight">
+        <header className="mb-6">
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">
             Derminder
           </h1>
         </header>
 
         {/* Status bar */}
-        <div className="flex items-center justify-center gap-2 mb-4 min-h-[24px]">
+        <div className="flex items-center gap-2 mb-6 min-h-[24px]">
           {!isOnline && (
-            <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-1 rounded-full">
+            <span className="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
               Offline
             </span>
           )}
-          {/* {isSyncing && (
-            <span className="text-xs text-teal-400 bg-teal-500/20 px-2 py-1 rounded-full animate-pulse">
-              Syncing...
-            </span>
-          )} */}
-          {/* {hasPendingSync && !isSyncing && isOnline && (
-            <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-1 rounded-full">
-              Changes pending
-            </span>
-          )} */}
         </div>
 
         {/* Week Strip - tap to view history */}
@@ -155,7 +138,7 @@ function HomeContent() {
         </div>
 
         {/* Time Slot Navigation */}
-        <div className="mb-6">
+        <div className="mb-8">
           <TimeSlotNav
             currentDay={currentDay}
             isEvening={isEvening}
@@ -167,7 +150,7 @@ function HomeContent() {
         </div>
 
         {/* Routine Cards - tap to mark complete */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {allSections.map((section) => (
             <RoutineCard
               key={section.id}
@@ -177,13 +160,6 @@ function HomeContent() {
             />
           ))}
         </div>
-
-        {/* Time indicator */}
-        {/* <div className="mt-8 text-center">
-          <p className="text-white/30 text-xs">
-            {isEvening ? '🌙 Evening routine' : '☀️ Morning routine'}
-          </p>
-        </div> */}
       </div>
 
       {/* Calendar Modal */}
