@@ -60,7 +60,7 @@ export const faceSection: RoutineSection = {
 };
 
 export const oralSection: RoutineSection = {
-  id: 'oral',
+  id: 'orals',
   title: 'Orals',
   icon: '💊',
   colorClass: 'text-amber-400',
